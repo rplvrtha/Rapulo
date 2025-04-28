@@ -14,8 +14,6 @@ Rapulo adalah framework PHP yang menggabungkan kemudahan Laravel (MVC, ORM, rout
 
 - PHP 7.4 atau lebih tinggi (disarankan PHP 8.x).
 - Composer untuk manajemen dependensi.
-- MySQL atau SQLite (opsional, untuk fitur database).
-- Git (opsional, untuk kontrol versi).
 
 ## Instalasi
 
@@ -27,7 +25,7 @@ Rapulo adalah framework PHP yang menggabungkan kemudahan Laravel (MVC, ORM, rout
 Ini akan menghasilkan direktori my-app dengan struktur proyek lengkap.
 
 2. **Masuk ke Direktori Proyek**:
-``` bash
+```bash
 cd my-app
 ```
 
