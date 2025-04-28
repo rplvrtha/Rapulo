@@ -29,7 +29,7 @@ class MakeMigrationCommand
         }
 
         $timestamp = date('Y_m_d_His');
-        $migrationPath = "app/Migrations/{$timestamp}_{$name}.php";
+        $migrationPath = "app/Migrations/{$name}.php";
 
         $this->fileSystemService->writeFile($migrationPath, $this->migrationTemplates->getMigrationTemplate($name, $timestamp));
         echo "Migration '$name' created\n";

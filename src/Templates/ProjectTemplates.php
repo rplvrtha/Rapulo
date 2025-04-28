@@ -23,7 +23,7 @@ class ProjectTemplates
             'app/Features/Auth/AuthController.php' => $this->getAuthController(),
             'app/Features/Auth/UserModel.php' => $this->getUserModel(),
             'app/Middleware/AuthMiddleware.php' => $this->getAuthMiddleware(),
-            'app/Migrations/Migration_2025_01_01_create_users_table.php' => $this->getUsersMigration(),
+            'app/Migrations/create_users_table.php' => $this->getUsersMigration(),
             'app/Seeds/UserSeed.php' => $this->getUserSeed(),
             'rapulo' => $this->getRapuloCli(),
         ];
@@ -835,9 +835,8 @@ CONTENT;
             exit(1);
         }
         \$migrationName = \$this->snakeCase(\$args[0]);
-        \$timestamp = date('Y_m_d_His');
-        \$migrationFile = "app/Migrations/{\$timestamp}_{\$migrationName}.php";
-        \$className = 'Migration_' . \$timestamp . '_' . \$migrationName;
+        \$migrationFile = "app/Migrations/{\$migrationName}.php";
+        \$className = 'Migration_' . \$migrationName;
         \$migrationContent = <<<CONTENT
 <?php
 use Rapulo\\Core\\ORM;
