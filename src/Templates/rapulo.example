@@ -1,0 +1,390 @@
+#!/usr/bin/env php
+<?php
+
+class RapuloCLI
+{
+    private $commands = [
+        'make:feature' => 'createFeature',
+        'make:component' => 'createComponent',
+        'make:controller' => 'createController',
+        'make:model' => 'createModel',
+        'make:middleware' => 'createMiddleware',
+        'make:migration' => 'createMigration',
+        'make:seed' => 'createSeed',
+        'migrate' => 'migrate',
+        'seed' => 'seed',
+        'serve' => 'serve',
+    ];
+
+    public function run()
+    {
+        global $argv;
+        $command = $argv[1] ?? '';
+
+        if (!isset($this->commands[$command])) {
+            $this->showHelp();
+            exit(1);
+        }
+
+        $method = $this->commands[$command];
+        $this->$method(array_slice($argv, 2));
+    }
+
+    private function showHelp()
+    {
+        echo <<<EOT
+Rapulo CLI (Enhanced PHP Framework)
+Available commands:
+  make:feature <name>              Create a new feature directory
+  make:component <name> <feature>  Create a new component in the specified feature
+  make:controller <name> <feature> Create a new controller in the specified feature
+  make:model <name> <feature>      Create a new model in the specified feature
+  make:middleware <name>           Create a new middleware
+  make:migration <name>            Create a new database migration
+  make:seed <name>                 Create a new database seed
+  migrate                         Run all database migrations
+  seed                            Run all database seeds
+  serve [host:port]                Run the development server
+  
+EOT;
+    }
+
+    private function createFeature(array $args)
+    {
+        if (count($args) < 1) {
+            echo "Error: Please provide feature name (e.g., make:feature Dashboard)\n";
+            exit(1);
+        }
+
+        $feature = ucfirst(preg_replace('/[^a-zA-Z0-9]/', '', $args[0]));
+        if (empty($feature)) {
+            echo "Error: Invalid feature name\n";
+            exit(1);
+        }
+
+        $featureDir = "app/Features/$feature";
+
+        if (is_dir($featureDir)) {
+            echo "Error: Feature '$feature' already exists\n";
+            exit(1);
+        }
+
+        mkdir($featureDir, 0755, true);
+        echo "Feature '$feature' created\n";
+    }
+
+    private function createComponent(array $args)
+    {
+        if (count($args) < 2) {
+            echo "Error: Please provide component name and feature (e.g., make:component Dashboard Dashboard)\n";
+            exit(1);
+        }
+
+        $name = ucfirst(preg_replace('/[^a-zA-Z0-9]/', '', $args[0]));
+        $feature = ucfirst(preg_replace('/[^a-zA-Z0-9]/', '', $args[1]));
+        if (empty($name) || empty($feature)) {
+            echo "Error: Invalid component or feature name\n";
+            exit(1);
+        }
+
+        $featureDir = "app/Features/$feature";
+        $componentPath = "$featureDir/{$name}Component.php";
+        $viewPath = "$featureDir/{$name}.view.php";
+
+        if (!is_dir($featureDir)) {
+            echo "Error: Feature '$feature' does not exist. Create it with 'make:feature $feature'\n";
+            exit(1);
+        }
+
+        $componentTemplate = <<<EOT
+<?php
+namespace Rapulo\\Features\\$feature;
+use Rapulo\\Core\\Component;
+
+class {$name}Component extends Component {
+    public function view() {
+        parent::view();
+    }
+}
+EOT;
+
+        $viewTemplate = <<<EOT
+<div>
+    <h1>$name Component</h1>
+</div>
+EOT;
+
+        $this->writeFile($componentPath, $componentTemplate);
+        $this->writeFile($viewPath, $viewTemplate);
+        echo "Component '$name' created in feature '$feature'\n";
+    }
+
+    private function createController(array $args)
+    {
+        if (count($args) < 2) {
+            echo "Error: Please provide controller name and feature (e.g., make:controller Dashboard Dashboard)\n";
+            exit(1);
+        }
+
+        $name = ucfirst(preg_replace('/[^a-zA-Z0-9]/', '', $args[0]));
+        $feature = ucfirst(preg_replace('/[^a-zA-Z0-9]/', '', $args[1]));
+        if (empty($name) || empty($feature)) {
+            echo "Error: Invalid controller or feature name\n";
+            exit(1);
+        }
+
+        $featureDir = "app/Features/$feature";
+        $controllerPath = "$featureDir/{$name}Controller.php";
+
+        if (!is_dir($featureDir)) {
+            echo "Error: Feature '$feature' does not exist. Create it with 'make:feature $feature'\n";
+            exit(1);
+        }
+
+        $controllerTemplate = <<<EOT
+<?php
+namespace Rapulo\\Features\\$feature;
+
+class {$name}Controller {
+    public function index() {
+        echo 'Welcome to $name Controller';
+    }
+}
+EOT;
+
+        $this->writeFile($controllerPath, $controllerTemplate);
+        echo "Controller '$name' created in feature '$feature'\n";
+    }
+
+    private function createModel(array $args)
+    {
+        if (count($args) < 2) {
+            echo "Error: Please provide model name and feature (e.g., make:model User Auth)\n";
+            exit(1);
+        }
+
+        $name = ucfirst(preg_replace('/[^a-zA-Z0-9]/', '', $args[0]));
+        $feature = ucfirst(preg_replace('/[^a-zA-Z0-9]/', '', $args[1]));
+        if (empty($name) || empty($feature)) {
+            echo "Error: Invalid model or feature name\n";
+            exit(1);
+        }
+
+        $featureDir = "app/Features/$feature";
+        $modelPath = "$featureDir/{$name}Model.php";
+
+        if (!is_dir($featureDir)) {
+            echo "Error: Feature '$feature' does not exist. Create it with 'make:feature $feature'\n";
+            exit(1);
+        }
+
+        $modelTemplate = <<<EOT
+<?php
+namespace Rapulo\\Features\\$feature;
+use Rapulo\\Core\\ORM;
+
+class {$name}Model extends ORM {
+    public function __construct() {
+        parent::__construct('$name');
+    }
+}
+EOT;
+
+        $this->writeFile($modelPath, $modelTemplate);
+        echo "Model '$name' created in feature '$feature'\n";
+    }
+
+    private function createMiddleware(array $args)
+    {
+        if (count($args) < 1) {
+            echo "Error: Please provide middleware name (e.g., make:middleware Admin)\n";
+            exit(1);
+        }
+
+        $name = ucfirst(preg_replace('/[^a-zA-Z0-9]/', '', $args[0]));
+        if (empty($name)) {
+            echo "Error: Invalid middleware name\n";
+            exit(1);
+        }
+
+        $middlewarePath = "app/Middleware/{$name}Middleware.php";
+
+        $middlewareTemplate = <<<EOT
+<?php
+namespace Rapulo\\Middleware;
+
+class {$name}Middleware {
+    public function handle() {
+        // Add middleware logic here
+        return true;
+    }
+}
+EOT;
+
+        $this->writeFile($middlewarePath, $middlewareTemplate);
+        echo "Middleware '$name' created\n";
+    }
+
+    private function createMigration(array $args)
+    {
+        if (count($args) < 1) {
+            echo "Error: Please provide migration name (e.g., make:migration create_posts_table)\n";
+            exit(1);
+        }
+
+        $name = preg_replace('/[^a-zA-Z0-9_]/', '', $args[0]);
+        if (empty($name)) {
+            echo "Error: Invalid migration name\n";
+            exit(1);
+        }
+
+        $timestamp = date('Y_m_d_His');
+        $migrationPath = "app/Migrations/{$timestamp}_{$name}.php";
+
+        $migrationTemplate = <<<EOT
+<?php
+use Rapulo\\Core\\ORM;
+
+class Migration_{$timestamp}_{$name} {
+    public function up() {
+        \$pdo = (new ORM('migrations'))->getPdo();
+        \$pdo->exec("
+            -- Add your table schema here
+        ");
+    }
+
+    public function down() {
+        \$pdo = (new ORM('migrations'))->getPdo();
+        \$pdo->exec("
+            -- Drop your table here
+        ");
+    }
+}
+EOT;
+
+        $this->writeFile($migrationPath, $migrationTemplate);
+        echo "Migration '$name' created\n";
+    }
+
+    private function createSeed(array $args)
+    {
+        if (count($args) < 1) {
+            echo "Error: Please provide seed name (e.g., make:seed PostSeed)\n";
+            exit(1);
+        }
+
+        $name = ucfirst(preg_replace('/[^a-zA-Z0-9]/', '', $args[0]));
+        if (empty($name)) {
+            echo "Error: Invalid seed name\n";
+            exit(1);
+        }
+
+        $seedPath = "app/Seeds/{$name}Seed.php";
+
+        $seedTemplate = <<<EOT
+<?php
+use Rapulo\\Core\\ORM;
+
+class {$name}Seed {
+    public function run() {
+        // Add seeding logic here
+    }
+}
+EOT;
+
+        $this->writeFile($seedPath, $seedTemplate);
+        echo "Seed '$name' created\n";
+    }
+
+    private function migrate(array $args)
+    {
+        $migrationDir = 'app/Migrations';
+        if (!is_dir($migrationDir)) {
+            echo "Error: Migrations directory not found\n";
+            exit(1);
+        }
+
+        $files = glob("$migrationDir/*.php");
+        foreach ($files as $file) {
+            require_once $file;
+            $className = 'Migration_' . basename($file, '.php');
+            if (class_exists($className)) {
+                try {
+                    $migration = new $className();
+                    $migration->up();
+                    echo "Applied migration: " . basename($file) . "\n";
+                } catch (Exception $e) {
+                    echo "Error applying migration " . basename($file) . ": " . $e->getMessage() . "\n";
+                    exit(1);
+                }
+            }
+        }
+
+        echo "All migrations applied successfully\n";
+    }
+
+    private function seed(array $args)
+    {
+        $seedDir = 'app/Seeds';
+        if (!is_dir($seedDir)) {
+            echo "Error: Seeds directory not found\n";
+            exit(1);
+        }
+
+        $files = glob("$seedDir/*.php");
+        foreach ($files as $file) {
+            require_once $file;
+            $className = basename($file, '.php');
+            if (class_exists($className)) {
+                try {
+                    $seed = new $className();
+                    $seed->run();
+                    echo "Applied seed: " . basename($file) . "\n";
+                } catch (Exception $e) {
+                    echo "Error applying seed " . basename($file) . ": " . $e->getMessage() . "\n";
+                    exit(1);
+                }
+            }
+        }
+
+        echo "All seeds applied successfully\n";
+    }
+
+    private function serve(array $args)
+    {
+        $hostPort = $args[0] ?? 'localhost:8000';
+        [$host, $port] = explode(':', $hostPort) + [1 => '8000'];
+
+        if (!file_exists('public/index.php')) {
+            echo "Error: Not in a Rapulo project directory\n";
+            exit(1);
+        }
+
+        echo "Starting Rapulo development server at http://$host:$port\n";
+        exec("php -S $host:$port -t public");
+    }
+
+    private function writeFile($path, $content)
+    {
+        if (file_exists($path)) {
+            echo "Error: File '$path' already exists\n";
+            exit(1);
+        }
+
+        // Validasi JSON untuk file .json
+        if (pathinfo($path, PATHINFO_EXTENSION) === 'json') {
+            $decoded = json_decode($content);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                echo "Error: Invalid JSON in '$path': " . json_last_error_msg() . "\n";
+                echo "Content: $content\n";
+                exit(1);
+            }
+        }
+
+        file_put_contents($path, $content);
+    }
+}
+
+$cli = new RapuloCLI();
+$cli->run();
+?>

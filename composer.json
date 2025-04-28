@@ -1,7 +1,11 @@
 {
-    "name": "rplvrtha/rapulo",
-    "version": "0.0.1-alpha",
-    "license": "MIT",
+    "name": "rapulo/cli",
+    "description": "Rapulo CLI for creating and managing Rapulo projects",
+    "type": "project",
     "require": {},
-    "minimum-stability": "alpha"
+    "autoload": {
+        "psr-4": {
+            "Rapulo\\CLI\\": "src/"
+        }
+    }
 }
