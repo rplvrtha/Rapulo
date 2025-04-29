@@ -1,5 +1,6 @@
 {
     "name": "rapulo/cli",
+    "minimum-stability": "beta",
     "description": "Rapulo CLI for creating and managing Rapulo projects",
     "type": "project",
     "require": {},
