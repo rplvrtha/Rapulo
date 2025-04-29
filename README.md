@@ -1,3 +1,4 @@
+![Icon Rapulo](rapulo_ico.jpeg)
 # Rapulo Framework
 
 Rapulo adalah framework PHP yang menggabungkan kemudahan Laravel (MVC, ORM, routing) dengan pendekatan komponen UI terinspirasi React, tanpa pemisahan frontend dan backend. Rapulo menggunakan struktur berbasis fitur untuk mengelompokkan kode berdasarkan fungsionalitas (misalnya, Auth, Dashboard), membuat pengembangan lebih terorganisir dan skalabel.
