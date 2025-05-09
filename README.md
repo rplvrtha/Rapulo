@@ -8,7 +8,7 @@ Rapulo adalah framework PHP yang menggabungkan kemudahan Laravel (MVC, ORM, rout
 - **Komponen UI Reaktif**: Bangun UI dengan komponen PHP yang mendukung props dan state.
 - **Routing dan Middleware**: Sistem routing sederhana dengan dukungan middleware untuk autentikasi dan validasi.
 - **ORM Sederhana**: Interaksi database menggunakan kelas Database yang terinspirasi Eloquent.
-- **CLI Terintegrasi**: Alat baris perintah untuk scaffolding komponen, controller, model, dan proyek baru.
+- **CLI Terintegrasi**: Alat baris perintah untuk scaffolding komponen, controller dan model.
 - **Struktur Berbasis Fitur**: Semua kode (komponen, controller, model, view) dikelompokkan berdasarkan fitur.
 
 ## Prasyarat
