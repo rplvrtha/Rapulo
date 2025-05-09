@@ -18,16 +18,17 @@ Rapulo adalah framework PHP yang menggabungkan kemudahan Laravel (MVC, ORM, rout
 
 ## Instalasi
 
-1. **Buat Proyek Baru**: Jalankan perintah berikut untuk membuat proyek Rapulo baru:
+1. **Clone repository ini**: Jalankan perintah berikut(for Arch Linux):
 
    ```bash
-   php rapulo create:project my-app
+   pacman -S git
+   git clone https://github.com/rplvrtha/Rapulo
    ```
-Ini akan menghasilkan direktori my-app dengan struktur proyek lengkap.
+Ini akan menghasilkan direktori `Rapulo` dengan struktur proyek lengkap.
 
 2. **Masuk ke Direktori Proyek**:
 ```bash
-cd my-app
+cd Rapulo
 ```
 
 3. **Instal Dependensi**:
@@ -74,7 +75,7 @@ Buka `http://localhost:8000/login` di browser untuk melihat halaman login defaul
 
 ## Struktur Direktori
 ```text
-my-app/
+Rapulo/
 ├── app/
 │   ├── Features/
 │   │   ├── Auth/
@@ -103,11 +104,6 @@ my-app/
 ```
 ## Penggunaan CLI
 Rapulo menyediakan alat baris perintah untuk mempercepat pengembangan:
-
-- **Membuat Proyek Baru**:
-```bash
-php rapulo create:project <nama-proyek>
-```
 
 - **Membuat Fitur Baru**:
 ```bash
@@ -146,7 +142,7 @@ php rapulo serve
 
 ## Debugging
 
-- **Cek Rute**: Akses `http://localhost:8000/?debug_routes=1` untuk melihat daftar rute yang terdaftar.
+- **Cek Rute**: Akses `http://<host>:<port>/?debug_routes=1` untuk melihat daftar rute yang terdaftar.
 
 - **Aktifkan Error Reporting**: Tambahkan di `public/index.php`:
 ```php
@@ -210,6 +206,6 @@ composer dump-autoload --optimize
 
 
 ## Lisensi
-Rapulo dilisensikan di bawah MIT License.
+Rapulo dilisensikan di bawah [MIT License](LICENSE).
 
 #### Copyright by Rapulo Team.
